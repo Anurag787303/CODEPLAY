@@ -1,9 +1,12 @@
 const express = require('express')
 const app = express()
 
-// Routes
-const test = require('./routes/testRoutes')
+// Middlewares
+app.use(express.json())
 
-app.use("/api/v1", test)
+// Routes
+const problemRoutes = require('./routes/ProblemRoutes')
+
+app.use('/api/v1/problem', problemRoutes)
 
 module.exports = app
