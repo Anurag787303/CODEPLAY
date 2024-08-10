@@ -11,10 +11,14 @@ exports.submit = async (req, res) => {
         folder: randomBytes(10).toString('hex')
     }
 
-    await sendMessage(data)
+    console.log("here, i am")
+    const response = await sendMessage(data);
+    console.log(response);
 
     res.status(200).send({
         message: "Code submitted successfully",
+        response: response || "No response"
+
     })
 }
 

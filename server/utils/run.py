@@ -1,50 +1,54 @@
-import os, filecmp, sys
+import os, filecmp, sys, subprocess, json
+
 
 codes = {200:'success',404:'file not found',400:'error',408:'timeout'}
 
 def compile(file, lang, path):
-
     if lang == 'python3':
-        return 200
+        return 200, None
     
-    if(os.path.isfile(file)):
+    if os.path.isfile(file):
+        compile_cmd = ''
         if lang == 'c':
-            os.system('gcc ' + file)
+            compile_cmd = ['gcc', file]
         elif lang == 'cpp':
-            os.system('g++ ' + file)
+            compile_cmd = ['g++', file]
         elif lang == 'java':
-            os.system('javac ' + file)
+            compile_cmd = ['javac', file]
 
-        if os.path.isfile('a.out') or os.path.isfile('main.class'):
-            return 200
+        if compile_cmd:
+            result = subprocess.run(compile_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if result.returncode == 0:
+                return 200, None
+            else:
+                return 400, result.stderr.decode('utf-8')
         else:
-            return 400
+            return 400, "Unsupported language"
     else:
-        return 404
+        return 404, "Source file not found"
 
 def run(file, input, timeout, lang):
     # cmd = 'sudo -u judge '
     cmd = ''
-    
+
     if lang == 'java':
-        cmd += 'java main'
+        cmd = ['java', 'Main']
     elif lang == 'c' or lang == 'cpp':
-        cmd += './a.out' 
+        cmd = ['./a.out']
     elif lang == 'python3':
-        cmd += 'python3 ' + file
+        cmd = ['python3', file]
 
-    print(cmd)
-
-    r = os.system('timeout ' + str(timeout) + ' ' + cmd + ' < ' + input + ' > ' + testout)
-
-    if r == 0:
-        output = open(testout, 'r')
-        print(output.read())
-        return 200
-    elif r == 31744:
-        return 408
+    result = subprocess.run(
+        ['timeout', str(timeout)] + cmd,
+        stdin=open(input, 'r'), stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    
+    if result.returncode == 0:
+        return 200, result.stdout.decode('utf-8')
+    elif result.returncode == 31744:
+        return 408, "Execution timed out"
     else:
-        return 400
+        return 400, result.stderr.decode('utf-8')
 
 def match(output):
     if os.path.isfile('out.txt') and os.path.isfile(output):
@@ -54,22 +58,18 @@ def match(output):
     else:
         return 404
 
-params=sys.argv
+params = sys.argv
 file = params[1].split('/')[3]
-path = os.getcwd()
-folder = params[1].split('/')[2]
-path = './temp/' +folder +'/'
-
+path = './temp/' + params[1].split('/')[2] + '/'
 os.chdir(path)
 lang = params[2]
-timeout = str(min(15,int(params[3])))
+timeout = str(min(15, int(params[3])))
 
-print(file,lang,timeout,path)
-
-testin =  "input.txt"
+testin = "input.txt"
 testout = "output.txt"
 
-status=compile(file,lang,path)
-if status ==200:
-    status=run(file,testin,timeout,lang)
-print(codes[status])
+status, data = compile(file, lang, path)
+if status == 200:
+    status, data = run(file, testin, timeout, lang)
+
+print(json.dumps({'status':codes[status], 'data':data}))

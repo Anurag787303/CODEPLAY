@@ -1,5 +1,8 @@
 const fs = require('fs');
 const { exec } = require('child_process');
+const { promisify } = require('util');
+
+const execPromise = promisify(exec);
 
 const extensions = {
     'python3': 'py',
@@ -36,11 +39,12 @@ exports.sendMessage = async (data) => {
     })
 
     const command = `python3 ./server/utils/run.py ./temp/${data.folder}/src.${extensions[data.lang]} ${data.lang} ${data.timeOut}`
-    exec(command, (err, stdout, stderr) => {
-        if (err) {
-            console.log(err)
-        }
 
-        console.log(stdout)
-    })
+    const { stdout, stderr } = await execPromise(command);
+
+    const response = JSON.parse(stdout)
+
+    return new Promise((resolve, reject) => {
+        resolve(response);
+    });
 }

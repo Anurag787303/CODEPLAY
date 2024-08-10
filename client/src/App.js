@@ -1,11 +1,16 @@
 import React from 'react'
+import { Route, Routes } from 'react-router-dom'
+import Problems from './Components/Problems'
+import Problem from './Components/Problem'
 
 const App = () => {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-      This updates
-    </h1>
+    <div>
+      <Routes>
+        <Route path="/" element={<Problems />} />
+        <Route path="/problem/:id" element={<Problem />} />
+      </Routes>
+    </div>
   )
 }
 
