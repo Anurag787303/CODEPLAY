@@ -63,7 +63,7 @@ file = params[1].split('/')[3]
 path = './temp/' + params[1].split('/')[2] + '/'
 os.chdir(path)
 lang = params[2]
-timeout = str(min(15, int(params[3])))
+timeout = str(min(5, int(params[3])))
 
 testin = "input.txt"
 testout = "output.txt"

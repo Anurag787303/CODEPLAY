@@ -30,6 +30,7 @@ services:
     environment:
       NODE_ENV: development
       WATCHPACK_POLLING: true
+      REACT_APP_API_URL: http://localhost:5000
     command: npm start
 
   mongo:

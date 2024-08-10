@@ -1,0 +1,37 @@
+.resizer {
+    width: 5px;
+    background-color: #000;
+    cursor: ew-resize;
+    position: relative;
+}
+
+.resizer:hover {
+    background-color: #007bff;
+}
+
+.resizer:active {
+    background-color: #0056b3;
+}
+
+.resizer:active,
+.resizer:hover {
+    transition: background-color 0.2s;
+}
+
+.resizer:active {
+    cursor: col-resize;
+}
+
+.resizer:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background-color: #000;
+}
+
+.flex-col::-webkit-scrollbar {
+    display: none;
+}
