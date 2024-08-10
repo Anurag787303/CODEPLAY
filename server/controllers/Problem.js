@@ -1,11 +1,20 @@
 const Problem = require('../models/Problem')
+const { randomBytes } = require('crypto')
+const { sendMessage } = require('../utils/utils')
 
-exports.submit = (req, res) => {
-    let code = req.body.code
+exports.submit = async (req, res) => {
+    let data = {
+        src: req.body.src,
+        input: req.body.input,
+        lang: req.body.lang,
+        timeOut: req.body.timeOut,
+        folder: randomBytes(10).toString('hex')
+    }
+
+    await sendMessage(data)
 
     res.status(200).send({
         message: "Code submitted successfully",
-        code: code
     })
 }
 
