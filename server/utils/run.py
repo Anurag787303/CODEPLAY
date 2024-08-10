@@ -15,7 +15,7 @@ def compile(file, lang, path):
         elif lang == 'java':
             os.system('javac ' + file)
 
-        if os.path.isfile('a.out') or os.path.isfile('a.exe') or os.path.isfile('main.class'):
+        if os.path.isfile('a.out') or os.path.isfile('main.class'):
             return 200
         else:
             return 400
@@ -23,12 +23,13 @@ def compile(file, lang, path):
         return 404
 
 def run(file, input, timeout, lang):
+    # cmd = 'sudo -u judge '
     cmd = ''
     
     if lang == 'java':
         cmd += 'java main'
     elif lang == 'c' or lang == 'cpp':
-        cmd += './a.exe' 
+        cmd += './a.out' 
     elif lang == 'python3':
         cmd += 'python3 ' + file
 
@@ -62,6 +63,8 @@ path = './temp/' +folder +'/'
 os.chdir(path)
 lang = params[2]
 timeout = str(min(15,int(params[3])))
+
+print(file,lang,timeout,path)
 
 testin =  "input.txt"
 testout = "output.txt"
