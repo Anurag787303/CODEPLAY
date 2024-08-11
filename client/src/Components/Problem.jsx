@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import MonacoEditor from 'react-monaco-editor';
 import './Problem.css';
 import { useParams } from 'react-router-dom';
 
@@ -61,6 +62,14 @@ const Problem = () => {
             .then((data) => setOutput(data.response.data));
     };
 
+    const editorOptions = {
+        selectOnLineNumbers: true,
+        automaticLayout: true,
+        autoIndent: 'full',
+        formatOnType: true,
+        formatOnPaste: true,
+    };
+
     return (
         <div className="flex h-screen">
             <div className="flex flex-col overflow-y-auto" style={{ width: leftWidth }}>
@@ -88,11 +97,11 @@ const Problem = () => {
                 </div>
             </div>
             <div ref={resizerRef} className="resizer"></div>
-            <div className="flex flex-col flex-grow">
+            <div className="flex flex-col flex-grow p-4 bg-gray-100">
                 <div className="flex items-center justify-center min-h-20 bg-blue-500">
                     <h1 className="text-3xl font-bold text-white">IDE</h1>
                 </div>
-                <div className="flex flex-col p-4">
+                <div className="flex flex-col p-4 bg-white border border-gray-300 rounded shadow-lg">
                     <label htmlFor="language-select" className="text-xl font-bold">Select Language</label>
                     <select
                         id="language-select"
@@ -106,15 +115,23 @@ const Problem = () => {
                         <option value="cpp">C++</option>
                     </select>
                 </div>
-                <div className="flex flex-col p-4">
+                <div className="flex flex-col p-4 bg-white border border-gray-300 rounded shadow-lg mt-4">
                     <h2 className="text-xl font-bold">Code</h2>
-                    <textarea className="w-full h-72 p-4 border border-gray-200" onChange={(e) => setCode(e.target.value)}></textarea>
+                    <MonacoEditor
+                        width="100%"
+                        height="400"
+                        language={selectedLanguage}
+                        theme="vs-light"
+                        value={code}
+                        options={editorOptions}
+                        onChange={(newValue) => setCode(newValue)}
+                    />
                 </div>
-                <div className="flex flex-col p-4">
+                <div className="flex flex-col p-4 bg-white border border-gray-300 rounded shadow-lg mt-4">
                     <h2 className="text-xl font-bold">Output</h2>
                     <textarea className="w-full h-24 p-4 border border-gray-200" disabled value={output}></textarea>
                 </div>
-                <div className="flex flex-col p-4">
+                <div className="flex flex-col p-4 mt-4">
                     <button className="bg-blue-500 text-white p-2 rounded" onClick={submitHandler}>Submit</button>
                 </div>
             </div>

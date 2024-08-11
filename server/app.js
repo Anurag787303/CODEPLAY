@@ -8,7 +8,9 @@ app.use(cors())
 
 // Routes
 const problemRoutes = require('./routes/ProblemRoutes')
+const userRoutes = require('./routes/UserRoutes')
 
 app.use('/api/v1/problem', problemRoutes)
+app.use('/api/v1/user', userRoutes)
 
 module.exports = app
